@@ -24,6 +24,14 @@
   "activationEvents": [
     "onLanguage:toml"
   ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "toml",
+        "extensions": [".toml"]
+      }
+    ]
+  },
   "scripts": {
     "vscode:prepublish": "pnpm run compile",
     "package": "pnpm vsce package --no-dependencies",
