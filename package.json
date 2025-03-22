@@ -13,18 +13,6 @@
   "activationEvents": [
     "onLanguage:toml"
   ],
-  "contributes": {
-    "commands": [
-      {
-        "command": "ruff-ignore-explainer.refreshExplanations",
-        "title": "Refresh Ruff Rule Explanations"
-      },
-      {
-        "command": "ruff-ignore-explainer.updateRules",
-        "title": "Update Ruff Rules Cache"
-      }
-    ]
-  },
   "scripts": {
     "vscode:prepublish": "pnpm run compile",
     "compile": "tsc -p ./",

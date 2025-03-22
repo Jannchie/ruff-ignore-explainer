@@ -23,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Register hover provider for pyproject.toml files
   const hoverProvider = vscode.languages.registerHoverProvider({ language: 'toml', pattern: '**/pyproject.toml' }, {
-    provideHover(document, position, token) {
+    provideHover(document, position, _token) {
       // Get the word under cursor
       const range = document.getWordRangeAtPosition(position, /["'][A-Z0-9]+["']/)
       if (!range) {
