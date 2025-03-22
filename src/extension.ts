@@ -14,7 +14,7 @@ export function activate(context: vscode.ExtensionContext) {
   // Create decorator type
   ruleDecorator = vscode.window.createTextEditorDecorationType({
     after: {
-      margin: '0 0 0 20px',
+      margin: '0 0 0 3px',
       color: new vscode.ThemeColor('editorInlayHint.foreground'),
       fontStyle: 'italic',
     },
@@ -107,53 +107,67 @@ async function updateDecorations(editor: vscode.TextEditor) {
     // Create decoration objects array
     const decorations: vscode.DecorationOptions[] = []
 
-    // Find ignore rules in document
+    // For each rule in the ignore list, find ALL occurrences in the document
     for (const rule of ignoreRules) {
-      // Find all instances of rule in document
-      const rulePattern = new RegExp(`["']${rule}["']`)
+      // Find all instances of rule in document (with quotes)
+      const rulePattern = new RegExp(`["']${rule}["']`, 'g')
 
       for (let i = 0; i < document.lineCount; i++) {
         const line = document.lineAt(i)
-        const position = new vscode.Position(i, line.text.length)
-        if (rulePattern.test(line.text)) {
-          // Get rule explanation
-          const ruleInfo = findRule(rule)
-          if (!ruleInfo) {
-            const linter = prefixToLinterMap.get(rule)
+        const lineText = line.text
+
+        // Look for matches of the rule in this line
+        const matches = [...lineText.matchAll(rulePattern)]
+
+        for (const match of matches) {
+          if (match.index !== undefined) {
+            // Calculate position at the end of the rule code (after the closing quote)
+            const startPos = match.index + match[0].length
+            const position = new vscode.Position(i, startPos)
+
+            // Get rule info
+            const ruleInfo = findRule(rule)
+
+            if (!ruleInfo) {
+              const linter = prefixToLinterMap.get(rule)
+              if (linter) {
+                const decoration: vscode.DecorationOptions = {
+                  range: new vscode.Range(position, position),
+                  renderOptions: {
+                    after: {
+                      contentText: ` (${linter})`,
+                    },
+                  },
+                }
+                decorations.push(decoration)
+              }
+              continue
+            }
+
+            // Create decoration with rule name and hover explanation
             const decoration: vscode.DecorationOptions = {
               range: new vscode.Range(position, position),
               renderOptions: {
                 after: {
-                  contentText: `${linter}`,
+                  contentText: ` (${ruleInfo.name})`,
                 },
               },
+              hoverMessage: new vscode.MarkdownString(ruleInfo.explanation),
             }
-            decorations.push(decoration)
-            continue
-          }
-          // Create decoration
-          const decoration: vscode.DecorationOptions = {
-            range: new vscode.Range(position, position),
-            renderOptions: {
-              after: {
-                contentText: `${ruleInfo.name}`,
-              },
-            },
-            hoverMessage: new vscode.MarkdownString(ruleInfo.explanation),
-          }
 
-          decorations.push(decoration)
-          break // Stop after finding first instance
+            decorations.push(decoration)
+          }
         }
       }
     }
 
-    outputChannel.appendLine(`Found ${decorations.length} ignore rules`)
+    outputChannel.appendLine(`Applied ${decorations.length} decorations to ignore rules`)
     // Apply decorations
     editor.setDecorations(ruleDecorator, decorations)
   }
   catch (error) {
     console.error('Error parsing TOML or applying decorations:', error)
+    outputChannel.appendLine(`Error: ${error}`)
   }
 }
 
