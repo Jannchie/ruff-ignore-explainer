@@ -9,6 +9,10 @@
     "email": "jannchie@gmail.com",
     "url": "https://jannchie.com"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jannchie/ruff-ignore-explainer"
+  },
   "categories": [
     "Other"
   ],
@@ -21,6 +25,8 @@
   ],
   "scripts": {
     "vscode:prepublish": "pnpm run compile",
+    "package": "pnpm vsce package --no-dependencies",
+    "publish": "pnpm vsce publish --no-dependencies",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "pretest": "pnpm run compile && pnpm run lint",
