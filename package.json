@@ -1,7 +1,7 @@
 {
   "publisher": "jannchie",
   "name": "ruff-ignore-explainer",
-  "displayName": "ruff-ignore-explainer",
+  "displayName": "Ruff Ignore Explainer",
   "version": "0.1.0",
   "description": "Explains the ignore array in pyproject.toml",
   "author": {
@@ -17,6 +17,7 @@
     "Other"
   ],
   "main": "./out/extension.js",
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.98.0"
   },
