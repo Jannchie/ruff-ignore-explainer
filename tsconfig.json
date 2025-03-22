@@ -7,11 +7,13 @@
     "rootDir": "src",
     "module": "Node16",
     "strict": true, /* enable all strict type-checking options */
-    "outDir": "out",
-    "sourceMap": true
+    "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
     /* Additional Checks */
-    // "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
-    // "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
-    // "noUnusedParameters": true,  /* Report errors on unused parameters. */
+    "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
+    "noUnusedParameters": true, /* Report errors on unused parameters. */
+    "outDir": "out",
+    "sourceMap": true,
+    "include": ["src"],
+    "exclude": ["node_modules", "dist"]
   }
 }

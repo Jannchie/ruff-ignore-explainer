@@ -89,7 +89,7 @@ async function updateDecorations(editor: vscode.TextEditor) {
     return
   }
 
-  const document = editor.document
+  const { document } = editor
   const text = document.getText()
 
   try {
