@@ -2,7 +2,7 @@
   "publisher": "jannchie",
   "name": "ruff-ignore-explainer",
   "displayName": "Ruff Ignore Explainer",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Explains the ignore array in pyproject.toml",
   "author": {
     "name": "jannchie",
