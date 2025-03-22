@@ -1,0 +1,51 @@
+{
+  "name": "ruff-rules-explainer",
+  "displayName": "ruff-rules-explainer",
+  "version": "0.0.1",
+  "description": "",
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "engines": {
+    "vscode": "^1.98.0"
+  },
+  "activationEvents": [
+    "onLanguage:toml"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "ruff-ignore-explainer.refreshExplanations",
+        "title": "Refresh Ruff Rule Explanations"
+      },
+      {
+        "command": "ruff-ignore-explainer.updateRules",
+        "title": "Update Ruff Rules Cache"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "pnpm run compile && pnpm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "dependencies": {
+    "@iarna/toml": "^2.2.5"
+  },
+  "devDependencies": {
+    "@jannchie/eslint-config": "^3.4.4",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/vscode": "^1.98.0",
+    "@typescript-eslint/eslint-plugin": "^8.25.0",
+    "@typescript-eslint/parser": "^8.25.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^9.21.0",
+    "typescript": "^5.7.3"
+  }
+}
