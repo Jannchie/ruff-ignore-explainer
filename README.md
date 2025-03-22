@@ -1,5 +1,5 @@
-# Ruff Ignore Explainer
+# Ruff Rule Explainer
 
-Explains the ignore array in pyproject.toml.
+Explains the ignore and select arrays in pyproject.toml.
 
 ![Preview](./assets/image.png)

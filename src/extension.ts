@@ -103,19 +103,23 @@ async function updateDecorations(editor: vscode.TextEditor) {
     // Parse TOML
     const config = toml.parse(text) as any
 
-    // Check if [tool.ruff] config and ignore field exist
-    if (!config.tool || !config.tool.ruff || !config.tool.ruff.ignore || !Array.isArray(config.tool.ruff.ignore)) {
+    // Check if [tool.ruff] config exists
+    if (!config.tool || !config.tool.ruff) {
       return
     }
 
-    // Get list of ignored rules
-    const ignoreRules = config.tool.ruff.ignore
+    // Get list of ignored and selected rules
+    const ignoreRules = config.tool.ruff.ignore || []
+    const selectRules = config.tool.ruff.select || []
+
+    // Combine ignore and select rules
+    const allRules = [...ignoreRules, ...selectRules]
 
     // Create decoration objects array
     const decorations: vscode.DecorationOptions[] = []
 
-    // For each rule in the ignore list, find ALL occurrences in the document
-    for (const rule of ignoreRules) {
+    // For each rule in the combined list, find ALL occurrences in the document
+    for (const rule of allRules) {
       // Find all instances of rule in document (with quotes)
       const rulePattern = new RegExp(`["']${rule}["']`, 'g')
 
@@ -168,7 +172,7 @@ async function updateDecorations(editor: vscode.TextEditor) {
       }
     }
 
-    outputChannel.appendLine(`Applied ${decorations.length} decorations to ignore rules`)
+    outputChannel.appendLine(`Applied ${decorations.length} decorations to ignore and select rules`)
     // Apply decorations
     editor.setDecorations(ruleDecorator, decorations)
   }
@@ -177,7 +181,6 @@ async function updateDecorations(editor: vscode.TextEditor) {
     outputChannel.appendLine(`Error: ${error}`)
   }
 }
-
 function findRule(ruleCode: string): RuffRule | undefined {
   return rules.find(r => r.code === ruleCode)
 }
