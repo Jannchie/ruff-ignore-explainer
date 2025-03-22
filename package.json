@@ -1,8 +1,14 @@
 {
-  "name": "ruff-rules-explainer",
-  "displayName": "ruff-rules-explainer",
+  "publisher": "jannchie",
+  "name": "ruff-ignore-explainer",
+  "displayName": "ruff-ignore-explainer",
   "version": "0.0.1",
-  "description": "",
+  "description": "Explains the ignore array in pyproject.toml",
+  "author": {
+    "name": "jannchie",
+    "email": "jannchie@gmail.com",
+    "url": "https://jannchie.com"
+  },
   "categories": [
     "Other"
   ],
