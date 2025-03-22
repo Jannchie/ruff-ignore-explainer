@@ -1,3 +1,11 @@
+## v1.1.0
+
+[v1.0.0...v1.1.0](https://github.com/Jannchie/ruff-ignore-explainer/compare/v1.0.0...v1.1.0)
+
+### :sparkles: Features
+
+- **ruff-rule-explainer**: support select array in pyproject.toml && update descriptions - By [Jianqi Pan](mailto:jannchie@gmail.com) in [eb70d18](https://github.com/Jannchie/ruff-ignore-explainer/commit/eb70d18)
+
 ## v0.1.0
 
 ### :sparkles: Features
