@@ -7,6 +7,13 @@ let ruleDecorator: vscode.TextEditorDecorationType
 
 const outputChannel = vscode.window.createOutputChannel('Ruff Ignore Explainer')
 
+function kebabToTitleCase(str: string): string {
+  return str
+    .replace(/-/g, ' ')
+    .toLowerCase()
+    .replace(/\b\w/g, char => char.toUpperCase())
+}
+
 // Activate extension
 export function activate(context: vscode.ExtensionContext) {
   outputChannel.appendLine('Ruff Ignore Explainer is now active')
@@ -135,7 +142,7 @@ async function updateDecorations(editor: vscode.TextEditor) {
                   range: new vscode.Range(position, position),
                   renderOptions: {
                     after: {
-                      contentText: ` (${linter})`,
+                      contentText: ` (${kebabToTitleCase(linter)})`,
                     },
                   },
                 }
@@ -149,7 +156,7 @@ async function updateDecorations(editor: vscode.TextEditor) {
               range: new vscode.Range(position, position),
               renderOptions: {
                 after: {
-                  contentText: ` (${ruleInfo.name})`,
+                  contentText: ` (${kebabToTitleCase(ruleInfo.name)})`,
                 },
               },
               hoverMessage: new vscode.MarkdownString(ruleInfo.explanation),
