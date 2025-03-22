@@ -21,6 +21,36 @@ export function activate(context: vscode.ExtensionContext) {
     isWholeLine: false,
   })
 
+  // Register hover provider for pyproject.toml files
+  const hoverProvider = vscode.languages.registerHoverProvider({ language: 'toml', pattern: '**/pyproject.toml' }, {
+    provideHover(document, position, token) {
+      // Get the word under cursor
+      const range = document.getWordRangeAtPosition(position, /["'][A-Z0-9]+["']/)
+      if (!range) {
+        return null
+      }
+
+      // Extract the rule code from the text (removing quotes)
+      const text = document.getText(range)
+      const ruleCode = text.replace(/["']/g, '')
+
+      // Find the rule information
+      const rule = findRule(ruleCode)
+      if (rule) {
+        // Return hover with markdown explanation
+        return new vscode.Hover(new vscode.MarkdownString(rule.explanation), range)
+      }
+
+      // If rule not found but recognized as a linter prefix
+      const linter = prefixToLinterMap.get(ruleCode)
+      if (linter) {
+        return new vscode.Hover(`${linter} (No detailed explanation available)`, range)
+      }
+
+      return null
+    },
+  })
+
   // Add editor change listener
   const activeEditorListener = vscode.window.onDidChangeActiveTextEditor((editor) => {
     if (editor) {
@@ -48,6 +78,7 @@ export function activate(context: vscode.ExtensionContext) {
     activeEditorListener,
     documentChangeListener,
     ruleDecorator,
+    hoverProvider,
   )
 }
 
@@ -86,8 +117,8 @@ async function updateDecorations(editor: vscode.TextEditor) {
         const position = new vscode.Position(i, line.text.length)
         if (rulePattern.test(line.text)) {
           // Get rule explanation
-          const role = findRule(rule)
-          if (!role) {
+          const ruleInfo = findRule(rule)
+          if (!ruleInfo) {
             const linter = prefixToLinterMap.get(rule)
             const decoration: vscode.DecorationOptions = {
               range: new vscode.Range(position, position),
@@ -105,10 +136,10 @@ async function updateDecorations(editor: vscode.TextEditor) {
             range: new vscode.Range(position, position),
             renderOptions: {
               after: {
-                contentText: `${role.name}`,
+                contentText: `${ruleInfo.name}`,
               },
             },
-            hoverMessage: new vscode.MarkdownString(role.explanation),
+            hoverMessage: new vscode.MarkdownString(ruleInfo.explanation),
           }
 
           decorations.push(decoration)
