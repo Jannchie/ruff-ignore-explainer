@@ -113,7 +113,7 @@ async function updateDecorations(editor: vscode.TextEditor) {
     const selectRules = config.tool.ruff.select || []
 
     // Combine ignore and select rules
-    const allRules = [...ignoreRules, ...selectRules]
+    const allRules = new Set([...ignoreRules, ...selectRules])
 
     // Create decoration objects array
     const decorations: vscode.DecorationOptions[] = []
