@@ -1,3 +1,11 @@
+## v1.1.1
+
+[v1.1.0...v1.1.1](https://github.com/Jannchie/ruff-ignore-explainer/compare/v1.1.0...v1.1.1)
+
+### :adhesive_bandage: Fixes
+
+- **decorator-rules**: use set to combine ignore and select rules - By [Jianqi Pan](mailto:jannchie@gmail.com) in [21dc883](https://github.com/Jannchie/ruff-ignore-explainer/commit/21dc883)
+
 ## v1.1.0
 
 [v1.0.0...v1.1.0](https://github.com/Jannchie/ruff-ignore-explainer/compare/v1.0.0...v1.1.0)
