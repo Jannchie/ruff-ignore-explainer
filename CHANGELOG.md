@@ -1,3 +1,12 @@
+## v1.2.0
+
+[v1.1.1...v1.2.0](https://github.com/Jannchie/ruff-ignore-explainer/compare/v1.1.1...v1.2.0)
+
+### :sparkles: Features
+
+- **extension**: add ruff.toml support to hover and decoration - By [Jianqi Pan](mailto:jannchie@gmail.com) in [c942a66](https://github.com/Jannchie/ruff-ignore-explainer/commit/c942a66)
+- **decorations**: enhance rule decorations with commas and brackets - By [Jianqi Pan](mailto:jannchie@gmail.com) in [5f15fbf](https://github.com/Jannchie/ruff-ignore-explainer/commit/5f15fbf)
+
 ## v1.1.1
 
 [v1.1.0...v1.1.1](https://github.com/Jannchie/ruff-ignore-explainer/compare/v1.1.0...v1.1.1)
