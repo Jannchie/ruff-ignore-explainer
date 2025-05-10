@@ -16,7 +16,7 @@ function kebabToTitleCase(str: string): string {
 
 // Activate extension
 export function activate(context: vscode.ExtensionContext) {
-  outputChannel.appendLine('Ruff Ignore Explainer is now active')
+  outputChannel.appendLine('Ruff Ignore Explainer is now active.')
 
   // Create decorator type
   ruleDecorator = vscode.window.createTextEditorDecorationType({
@@ -111,9 +111,45 @@ async function updateDecorations(editor: vscode.TextEditor) {
     // Get list of ignored and selected rules
     const ignoreRules = config.tool.ruff.ignore || []
     const selectRules = config.tool.ruff.select || []
+    const extendSelectRules = config.tool.ruff['extend-select'] || []
+    // Also check [tool.ruff.lint] section
+    const lintIgnoreRules = config.tool.ruff.lint?.ignore || []
+    const lintSelectRules = config.tool.ruff.lint?.select || []
+    const lintExtendSelectRules = config.tool.ruff.lint?.['extend-select'] || []
 
-    // Combine ignore and select rules
-    const allRules = new Set([...ignoreRules, ...selectRules])
+    // Also check [tool.ruff.per-file-ignores] section
+    const perFileIgnores = config.tool.ruff['per-file-ignores'] || {}
+
+    // Also check [tool.ruff.lint.per-file-ignores] section
+    const lintPerFileIgnores = config.tool.ruff.lint?.['per-file-ignores'] || {}
+
+    // Extract all rules from per-file-ignores sections
+    let perFileIgnoreRules: string[] = []
+
+    // Process [tool.ruff.per-file-ignores]
+    for (const filePattern in perFileIgnores) {
+      if (Array.isArray(perFileIgnores[filePattern])) {
+        perFileIgnoreRules = [...perFileIgnoreRules, ...perFileIgnores[filePattern]]
+      }
+    }
+
+    // Process [tool.ruff.lint.per-file-ignores]
+    for (const filePattern in lintPerFileIgnores) {
+      if (Array.isArray(lintPerFileIgnores[filePattern])) {
+        perFileIgnoreRules = [...perFileIgnoreRules, ...lintPerFileIgnores[filePattern]]
+      }
+    }
+
+    // Combine all rules from all sections
+    const allRules = new Set([
+      ...ignoreRules,
+      ...selectRules,
+      ...extendSelectRules,
+      ...lintIgnoreRules,
+      ...lintSelectRules,
+      ...lintExtendSelectRules,
+      ...perFileIgnoreRules,
+    ])
 
     // Create decoration objects array
     const decorations: vscode.DecorationOptions[] = []
@@ -136,17 +172,63 @@ async function updateDecorations(editor: vscode.TextEditor) {
             const startPos = match.index + match[0].length
             const position = new vscode.Position(i, startPos)
 
-            // Get rule info
-            const ruleInfo = findRule(rule)
+            // Look for a comma after the rule
+            const textAfterRule = lineText.substring(startPos)
+            const commaMatch = textAfterRule.match(/^\s*,/)
+            const bracketMatch = textAfterRule.match(/^\s*\]/)
+            let decorationPosition = position
 
+            // Get rule info early so it's available for all decoration paths
+            const ruleInfo = findRule(rule)
+            const linter = prefixToLinterMap.get(rule)
+
+            // If comma exists, position the decoration after it
+            if (commaMatch) {
+              const commaEndPosition = startPos + commaMatch[0].length
+              decorationPosition = new vscode.Position(i, commaEndPosition)
+
+              // Create decoration for elements with comma (non-last elements)
+              const decoration: vscode.DecorationOptions = {
+                range: new vscode.Range(decorationPosition, decorationPosition),
+                renderOptions: {
+                  after: {
+                    contentText: ruleInfo
+                      ? ` ${kebabToTitleCase(ruleInfo.name)}`
+                      : linter ? ` ${kebabToTitleCase(linter)}` : '',
+                  },
+                },
+                hoverMessage: ruleInfo ? new vscode.MarkdownString(ruleInfo.explanation) : undefined,
+              }
+              decorations.push(decoration)
+              continue // Skip the standard decoration creation below
+            }
+            // For single-line arrays where the rule is followed by a closing bracket
+            else if (bracketMatch) {
+              // Create a zero-width decoration by using a special marker
+              // This prevents the decoration from "swallowing" the closing bracket
+              const decoration: vscode.DecorationOptions = {
+                range: new vscode.Range(position, position),
+                renderOptions: {
+                  before: {
+                    contentText: ruleInfo
+                      ? ` ${kebabToTitleCase(ruleInfo.name)}`
+                      : linter ? ` ${kebabToTitleCase(linter)}` : '',
+                  },
+                },
+                hoverMessage: ruleInfo ? new vscode.MarkdownString(ruleInfo.explanation) : undefined,
+              }
+              decorations.push(decoration)
+              continue // Skip the standard decoration creation below
+            }
+
+            // This section is now only for cases that don't match the above scenarios
             if (!ruleInfo) {
-              const linter = prefixToLinterMap.get(rule)
               if (linter) {
                 const decoration: vscode.DecorationOptions = {
-                  range: new vscode.Range(position, position),
+                  range: new vscode.Range(decorationPosition, decorationPosition),
                   renderOptions: {
                     after: {
-                      contentText: ` (${kebabToTitleCase(linter)})`,
+                      contentText: ` ${kebabToTitleCase(linter)}`,
                     },
                   },
                 }
@@ -157,10 +239,10 @@ async function updateDecorations(editor: vscode.TextEditor) {
 
             // Create decoration with rule name and hover explanation
             const decoration: vscode.DecorationOptions = {
-              range: new vscode.Range(position, position),
+              range: new vscode.Range(decorationPosition, decorationPosition),
               renderOptions: {
                 after: {
-                  contentText: ` (${kebabToTitleCase(ruleInfo.name)})`,
+                  contentText: ` ${kebabToTitleCase(ruleInfo.name)}`,
                 },
               },
               hoverMessage: new vscode.MarkdownString(ruleInfo.explanation),
