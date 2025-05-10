@@ -29,7 +29,10 @@ export function activate(context: vscode.ExtensionContext) {
   })
 
   // Register hover provider for pyproject.toml files
-  const hoverProvider = vscode.languages.registerHoverProvider({ language: 'toml', pattern: '**/pyproject.toml' }, {
+  const hoverProvider = vscode.languages.registerHoverProvider([
+    { language: 'toml', pattern: '**/pyproject.toml' },
+    { language: 'toml', pattern: '**/ruff.toml' },
+  ], {
     provideHover(document, position, _token) {
       // Get the word under cursor
       const range = document.getWordRangeAtPosition(position, /["'][A-Z0-9]+["']/)
@@ -91,49 +94,61 @@ export function activate(context: vscode.ExtensionContext) {
 
 // Update decorations
 async function updateDecorations(editor: vscode.TextEditor) {
-  // Only process pyproject.toml files
-  if (!editor.document.fileName.endsWith('pyproject.toml')) {
+  // Only process pyproject.toml or ruff.toml files
+  if (!editor.document.fileName.endsWith('pyproject.toml') && !editor.document.fileName.endsWith('ruff.toml')) {
     return
   }
 
   const { document } = editor
   const text = document.getText()
+  const isRuffToml = document.fileName.endsWith('ruff.toml')
 
   try {
     // Parse TOML
     const config = toml.parse(text) as any
 
-    // Check if [tool.ruff] config exists
-    if (!config.tool || !config.tool.ruff) {
-      return
+    // For pyproject.toml, check if [tool.ruff] config exists
+    // For ruff.toml, use config directly
+    let ruffConfig: any
+
+    if (isRuffToml) {
+      ruffConfig = config
+    }
+    else {
+      // For pyproject.toml
+      if (!config.tool || !config.tool.ruff) {
+        return
+      }
+      ruffConfig = config.tool.ruff
     }
 
     // Get list of ignored and selected rules
-    const ignoreRules = config.tool.ruff.ignore || []
-    const selectRules = config.tool.ruff.select || []
-    const extendSelectRules = config.tool.ruff['extend-select'] || []
-    // Also check [tool.ruff.lint] section
-    const lintIgnoreRules = config.tool.ruff.lint?.ignore || []
-    const lintSelectRules = config.tool.ruff.lint?.select || []
-    const lintExtendSelectRules = config.tool.ruff.lint?.['extend-select'] || []
+    const ignoreRules = ruffConfig.ignore || []
+    const selectRules = ruffConfig.select || []
+    const extendSelectRules = ruffConfig['extend-select'] || []
 
-    // Also check [tool.ruff.per-file-ignores] section
-    const perFileIgnores = config.tool.ruff['per-file-ignores'] || {}
+    // Check lint section
+    const lintIgnoreRules = ruffConfig.lint?.ignore || []
+    const lintSelectRules = ruffConfig.lint?.select || []
+    const lintExtendSelectRules = ruffConfig.lint?.['extend-select'] || []
 
-    // Also check [tool.ruff.lint.per-file-ignores] section
-    const lintPerFileIgnores = config.tool.ruff.lint?.['per-file-ignores'] || {}
+    // Check per-file-ignores section
+    const perFileIgnores = ruffConfig['per-file-ignores'] || {}
+
+    // Check lint.per-file-ignores section
+    const lintPerFileIgnores = ruffConfig.lint?.['per-file-ignores'] || {}
 
     // Extract all rules from per-file-ignores sections
     let perFileIgnoreRules: string[] = []
 
-    // Process [tool.ruff.per-file-ignores]
+    // Process per-file-ignores
     for (const filePattern in perFileIgnores) {
       if (Array.isArray(perFileIgnores[filePattern])) {
         perFileIgnoreRules = [...perFileIgnoreRules, ...perFileIgnores[filePattern]]
       }
     }
 
-    // Process [tool.ruff.lint.per-file-ignores]
+    // Process lint.per-file-ignores
     for (const filePattern in lintPerFileIgnores) {
       if (Array.isArray(lintPerFileIgnores[filePattern])) {
         perFileIgnoreRules = [...perFileIgnoreRules, ...lintPerFileIgnores[filePattern]]
