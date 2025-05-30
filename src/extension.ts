@@ -73,7 +73,6 @@ export function activate(context: vscode.ExtensionContext) {
   const documentChangeListener = vscode.workspace.onDidChangeTextDocument((event) => {
     const editor = vscode.window.activeTextEditor
     if (editor && event.document === editor.document) {
-      outputChannel.appendLine(`Document ${event.document.fileName} changed`)
       updateDecorations(editor)
     }
   })
