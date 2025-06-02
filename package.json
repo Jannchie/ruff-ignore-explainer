@@ -36,7 +36,17 @@
           "TOML"
         ]
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Ruff Rules Explainer",
+      "properties": {
+        "ruffRulesExplainer.showDecorations": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show rule decorations inline in TOML files. If disabled, only tooltips will be shown."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run compile",

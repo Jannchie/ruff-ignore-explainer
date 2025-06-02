@@ -98,6 +98,10 @@ async function updateDecorations(editor: vscode.TextEditor) {
     return
   }
 
+  // 新增：读取设置项，决定是否显示装饰
+  const config = vscode.workspace.getConfiguration('ruffRulesExplainer')
+  const showDecorations = config.get<boolean>('showDecorations', true)
+
   const { document } = editor
   const text = document.getText()
   const isRuffToml = document.fileName.endsWith('ruff.toml')
@@ -270,7 +274,12 @@ async function updateDecorations(editor: vscode.TextEditor) {
 
     outputChannel.appendLine(`Applied ${decorations.length} decorations to ignore and select rules`)
     // Apply decorations
-    editor.setDecorations(ruleDecorator, decorations)
+    if (showDecorations) {
+      editor.setDecorations(ruleDecorator, decorations)
+    }
+    else {
+      editor.setDecorations(ruleDecorator, [])
+    }
   }
   catch (error) {
     console.error('Error parsing TOML or applying decorations:', error)
