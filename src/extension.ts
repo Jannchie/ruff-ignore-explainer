@@ -128,11 +128,15 @@ async function updateDecorations(editor: vscode.TextEditor) {
     // Get list of ignored and selected rules
     const ignoreRules = ruffConfig.ignore || []
     const selectRules = ruffConfig.select || []
+    const fixableRules = ruffConfig.fixable || []
+    const unfixableRules = ruffConfig.unfixable || []
     const extendSelectRules = ruffConfig['extend-select'] || []
 
     // Check lint section
     const lintIgnoreRules = ruffConfig.lint?.ignore || []
     const lintSelectRules = ruffConfig.lint?.select || []
+    const lintFixableRules = ruffConfig.lint?.fixable || []
+    const lintUnfixableRules = ruffConfig.lint?.unfixable || []
     const lintExtendSelectRules = ruffConfig.lint?.['extend-select'] || []
 
     // Check per-file-ignores section
@@ -167,6 +171,10 @@ async function updateDecorations(editor: vscode.TextEditor) {
       ...lintSelectRules,
       ...lintExtendSelectRules,
       ...perFileIgnoreRules,
+      ...fixableRules,
+      ...lintFixableRules,
+      ...unfixableRules,
+      ...lintUnfixableRules,
     ])
 
     // Create decoration objects array
