@@ -2,6 +2,7 @@ import type { RuffRule } from './rules'
 import * as toml from '@iarna/toml'
 import * as vscode from 'vscode'
 import { prefixToLinterMap, rules } from './rules'
+
 // Define decoration type
 let ruleDecorator: vscode.TextEditorDecorationType
 
@@ -9,9 +10,9 @@ const outputChannel = vscode.window.createOutputChannel('Ruff Ignore Explainer')
 
 function kebabToTitleCase(str: string): string {
   return str
-    .replace(/-/g, ' ')
+    .replaceAll('-', ' ')
     .toLowerCase()
-    .replace(/\b\w/g, char => char.toUpperCase())
+    .replaceAll(/\b\w/g, char => char.toUpperCase())
 }
 
 // Activate extension
@@ -42,7 +43,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       // Extract the rule code from the text (removing quotes)
       const text = document.getText(range)
-      const ruleCode = text.replace(/["']/g, '')
+      const ruleCode = text.replaceAll(/["']/g, '')
 
       // Find the rule information
       const rule = findRule(ruleCode)
@@ -199,7 +200,7 @@ async function updateDecorations(editor: vscode.TextEditor) {
             const position = new vscode.Position(i, startPos)
 
             // Look for a comma after the rule
-            const textAfterRule = lineText.substring(startPos)
+            const textAfterRule = lineText.slice(Math.max(0, startPos))
             const commaMatch = textAfterRule.match(/^\s*,/)
             const bracketMatch = textAfterRule.match(/^\s*\]/)
             let decorationPosition = position
@@ -220,7 +221,7 @@ async function updateDecorations(editor: vscode.TextEditor) {
                   after: {
                     contentText: ruleInfo
                       ? ` ${kebabToTitleCase(ruleInfo.name)}`
-                      : linter ? ` ${kebabToTitleCase(linter)}` : '',
+                      : (linter ? ` ${kebabToTitleCase(linter)}` : ''),
                   },
                 },
                 hoverMessage: ruleInfo ? new vscode.MarkdownString(ruleInfo.explanation) : undefined,
@@ -238,7 +239,7 @@ async function updateDecorations(editor: vscode.TextEditor) {
                   before: {
                     contentText: ruleInfo
                       ? ` ${kebabToTitleCase(ruleInfo.name)}`
-                      : linter ? ` ${kebabToTitleCase(linter)}` : '',
+                      : (linter ? ` ${kebabToTitleCase(linter)}` : ''),
                   },
                 },
                 hoverMessage: ruleInfo ? new vscode.MarkdownString(ruleInfo.explanation) : undefined,

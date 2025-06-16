@@ -8551,9 +8551,9 @@ export const rules: RuffRule[] = [
     name: 'invalid-character-backspace',
     code: 'PLE2510',
     linter: 'Pylint',
-    summary: 'Invalid unescaped character backspace, use "\\b" instead',
+    summary: String.raw`Invalid unescaped character backspace, use "\b" instead`,
     message_formats: [
-      'Invalid unescaped character backspace, use "\\b" instead',
+      String.raw`Invalid unescaped character backspace, use "\b" instead`,
     ],
     fix: 'Fix is sometimes available.',
     explanation: '## What it does\nChecks for strings that contain the control character `BS`.\n\n## Why is this bad?\nControl characters are displayed differently by different text editors and\nterminals.\n\nBy using the `\\b` sequence in lieu of the `BS` control character, the\nstring will contain the same value, but will render visibly in all editors.\n\n## Example\n```python\nx = ""\n```\n\nUse instead:\n```python\nx = "\\b"\n```\n',
@@ -8563,9 +8563,9 @@ export const rules: RuffRule[] = [
     name: 'invalid-character-sub',
     code: 'PLE2512',
     linter: 'Pylint',
-    summary: 'Invalid unescaped character SUB, use "\\x1A" instead',
+    summary: String.raw`Invalid unescaped character SUB, use "\x1A" instead`,
     message_formats: [
-      'Invalid unescaped character SUB, use "\\x1A" instead',
+      String.raw`Invalid unescaped character SUB, use "\x1A" instead`,
     ],
     fix: 'Fix is sometimes available.',
     explanation: '## What it does\nChecks for strings that contain the raw control character `SUB`.\n\n## Why is this bad?\nControl characters are displayed differently by different text editors and\nterminals.\n\nBy using the `\\x1A` sequence in lieu of the `SUB` control character, the\nstring will contain the same value, but will render visibly in all editors.\n\n## Example\n```python\nx = ""\n```\n\nUse instead:\n```python\nx = "\\x1a"\n```\n',
@@ -8575,9 +8575,9 @@ export const rules: RuffRule[] = [
     name: 'invalid-character-esc',
     code: 'PLE2513',
     linter: 'Pylint',
-    summary: 'Invalid unescaped character ESC, use "\\x1B" instead',
+    summary: String.raw`Invalid unescaped character ESC, use "\x1B" instead`,
     message_formats: [
-      'Invalid unescaped character ESC, use "\\x1B" instead',
+      String.raw`Invalid unescaped character ESC, use "\x1B" instead`,
     ],
     fix: 'Fix is sometimes available.',
     explanation: '## What it does\nChecks for strings that contain the raw control character `ESC`.\n\n## Why is this bad?\nControl characters are displayed differently by different text editors and\nterminals.\n\nBy using the `\\x1B` sequence in lieu of the `SUB` control character, the\nstring will contain the same value, but will render visibly in all editors.\n\n## Example\n```python\nx = ""\n```\n\nUse instead:\n```python\nx = "\\x1b"\n```\n',
@@ -8587,9 +8587,9 @@ export const rules: RuffRule[] = [
     name: 'invalid-character-nul',
     code: 'PLE2514',
     linter: 'Pylint',
-    summary: 'Invalid unescaped character NUL, use "\\0" instead',
+    summary: String.raw`Invalid unescaped character NUL, use "\0" instead`,
     message_formats: [
-      'Invalid unescaped character NUL, use "\\0" instead',
+      String.raw`Invalid unescaped character NUL, use "\0" instead`,
     ],
     fix: 'Fix is sometimes available.',
     explanation: '## What it does\nChecks for strings that contain the raw control character `NUL` (0 byte).\n\n## Why is this bad?\nControl characters are displayed differently by different text editors and\nterminals.\n\nBy using the `\\0` sequence in lieu of the `NUL` control character, the\nstring will contain the same value, but will render visibly in all editors.\n\n## Example\n```python\nx = ""\n```\n\nUse instead:\n```python\nx = "\\0"\n```\n',
@@ -8599,9 +8599,9 @@ export const rules: RuffRule[] = [
     name: 'invalid-character-zero-width-space',
     code: 'PLE2515',
     linter: 'Pylint',
-    summary: 'Invalid unescaped character zero-width-space, use "\\u200B" instead',
+    summary: String.raw`Invalid unescaped character zero-width-space, use "\u200B" instead`,
     message_formats: [
-      'Invalid unescaped character zero-width-space, use "\\u200B" instead',
+      String.raw`Invalid unescaped character zero-width-space, use "\u200B" instead`,
     ],
     fix: 'Fix is sometimes available.',
     explanation: '## What it does\nChecks for strings that contain the zero width space character.\n\n## Why is this bad?\nThis character is rendered invisibly in some text editors and terminals.\n\nBy using the `\\u200B` sequence, the string will contain the same value,\nbut will render visibly in all editors.\n\n## Example\n```python\nx = "Dear Sir/Madam"\n```\n\nUse instead:\n```python\nx = "Dear Sir\\u200b/\\u200bMadam"  # zero width space\n```\n',
@@ -11139,6 +11139,7 @@ export const rules: RuffRule[] = [
     preview: false,
   },
 ]
+// eslint-disable-next-line unicorn/no-array-reduce
 export const prefixToLinterMap = rules.reduce((map, rule) => {
   const match = rule.code.match(/^[A-Z]+/) // 提取前缀（大写字母部分）
   if (match) {

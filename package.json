@@ -62,16 +62,16 @@
     "@iarna/toml": "^2.2.5"
   },
   "devDependencies": {
-    "@jannchie/eslint-config": "^3.4.4",
+    "@jannchie/eslint-config": "^3.6.1",
     "@types/mocha": "^10.0.10",
-    "@types/node": "20.x",
-    "@types/vscode": "^1.98.0",
-    "@typescript-eslint/eslint-plugin": "^8.25.0",
-    "@typescript-eslint/parser": "^8.25.0",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1",
-    "esbuild": "^0.25.1",
-    "eslint": "^9.21.0",
-    "typescript": "^5.8.2"
+    "@types/node": "~24.0.1",
+    "@types/vscode": "^1.101.0",
+    "@typescript-eslint/eslint-plugin": "^8.34.0",
+    "@typescript-eslint/parser": "^8.34.0",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "esbuild": "^0.25.5",
+    "eslint": "^9.29.0",
+    "typescript": "^5.8.3"
   }
 }
