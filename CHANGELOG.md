@@ -1,3 +1,39 @@
+## v1.4.0
+
+[v1.3.0...v1.4.0](https://github.com/Jannchie/ruff-ignore-explainer/compare/v1.3.0...v1.4.0)
+
+### :sparkles: Features
+
+- **extension**: support fixable and unfixable rules - By [Jianqi Pan](mailto:jannchie@gmail.com) in [bdf6b59](https://github.com/Jannchie/ruff-ignore-explainer/commit/bdf6b59)
+
+### :wrench: Chores
+
+- **deps**: update dev dependencies and string handling - By [Jianqi Pan](mailto:jannchie@gmail.com) in [53cf6ea](https://github.com/Jannchie/ruff-ignore-explainer/commit/53cf6ea)
+
+## v1.3.0
+
+[v1.2.1...v1.3.0](https://github.com/Jannchie/ruff-ignore-explainer/compare/v1.2.1...v1.3.0)
+
+### :sparkles: Features
+
+- **config**: add showDecorations setting to enable or disable inline rule decorations - By [Jianqi Pan](mailto:jannchie@gmail.com) in [be15808](https://github.com/Jannchie/ruff-ignore-explainer/commit/be15808)
+
+## v1.2.1
+
+[v1.2.0...v1.2.1](https://github.com/Jannchie/ruff-ignore-explainer/compare/v1.2.0...v1.2.1)
+
+### :art: Refactors
+
+- **logging**: remove debug log from document change handler - By [Jianqi Pan](mailto:jannchie@gmail.com) in [a200a1c](https://github.com/Jannchie/ruff-ignore-explainer/commit/a200a1c)
+
+### :lipstick: Styles
+
+- **pnpm-lock-file**: use double quotes consistently - By [Jianqi Pan](mailto:jannchie@gmail.com) in [30a198d](https://github.com/Jannchie/ruff-ignore-explainer/commit/30a198d)
+
+### :memo: Documentation
+
+- **changelog**: update for v1.2.0 release with new features - By [Jianqi Pan](mailto:jannchie@gmail.com) in [fdb06fd](https://github.com/Jannchie/ruff-ignore-explainer/commit/fdb06fd)
+
 ## v1.2.0
 
 [v1.1.1...v1.2.0](https://github.com/Jannchie/ruff-ignore-explainer/compare/v1.1.1...v1.2.0)
